@@ -447,6 +447,8 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             cursor: pointer; /* Clickable cursor */
+            touch-action: manipulation; /* Optimize touch events */
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
         }
         .free-segment {
             background-color: #f0f9ff; /* Tailwind sky-50 */
@@ -531,6 +533,61 @@
         .agenda-slots-container::-webkit-scrollbar-thumb:hover,
         #searchResultsContainer::-webkit-scrollbar-thumb:hover {
             background: #64748b; /* Tailwind slate-500 */
+        }
+        
+        /* Touch scroll support for mobile devices */
+        .agenda-slots-container {
+            -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+            overscroll-behavior: contain; /* Prevent overscroll */
+            touch-action: pan-y; /* Allow vertical scrolling only */
+            scroll-behavior: smooth; /* Smooth scrolling */
+        }
+        
+        /* Ensure touch events work properly on mobile */
+        .agenda-slots-container * {
+            touch-action: manipulation; /* Optimize touch events */
+        }
+        
+        /* Fix for Android touch scrolling issues */
+        @media (hover: none) and (pointer: coarse) {
+            .agenda-slots-container {
+                -webkit-overflow-scrolling: touch;
+                overflow-y: scroll;
+                scrollbar-width: thin;
+                scrollbar-color: #94a3b8 #f1f5f9;
+                /* Additional Android-specific fixes */
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                will-change: scroll-position;
+            }
+            
+            /* Hide scrollbar on mobile but keep functionality */
+            .agenda-slots-container::-webkit-scrollbar {
+                width: 4px;
+            }
+            
+            .agenda-slots-container::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            
+            .agenda-slots-container::-webkit-scrollbar-thumb {
+                background: rgba(148, 163, 184, 0.5);
+                border-radius: 2px;
+            }
+            
+            /* Ensure all child elements don't interfere with scrolling */
+            .agenda-slots-container > * {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+        }
+        
+        /* Additional Android Chrome specific fixes */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            .agenda-slots-container {
+                -webkit-overflow-scrolling: touch;
+                overflow-y: auto;
+            }
         }
         /* Style for details content in modal */
         .details-content {
@@ -1384,6 +1441,11 @@
                 hourRow.appendChild(timeSlotBar);
                 agendaSlotsContainerEl.appendChild(hourRow);
             }
+            
+            // Enhance touch scroll support for mobile devices
+            setTimeout(() => {
+                enhanceTouchScrollSupport();
+            }, 100);
         }
 
 
@@ -1483,6 +1545,61 @@
                     navigateToDate(nextDate);
                 }
             }
+        }
+
+        // Enhanced touch scroll support for agenda container
+        function enhanceTouchScrollSupport() {
+            const agendaContainer = document.getElementById('agendaSlotsContainer');
+            if (!agendaContainer) return;
+
+            let touchStartY = 0;
+            let touchStartX = 0;
+            let isScrolling = false;
+
+            agendaContainer.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches[0].clientX;
+                isScrolling = false;
+            }, { passive: true });
+
+            agendaContainer.addEventListener('touchmove', (e) => {
+                if (!isScrolling) {
+                    const touchY = e.touches[0].clientY;
+                    const touchX = e.touches[0].clientX;
+                    const deltaY = Math.abs(touchY - touchStartY);
+                    const deltaX = Math.abs(touchX - touchStartX);
+                    
+                    // Determine if this is a vertical scroll gesture
+                    if (deltaY > deltaX && deltaY > 10) {
+                        isScrolling = true;
+                    }
+                }
+            }, { passive: true });
+
+            agendaContainer.addEventListener('touchend', (e) => {
+                isScrolling = false;
+            }, { passive: true });
+
+            // Prevent click events during scroll
+            agendaContainer.addEventListener('touchstart', (e) => {
+                const target = e.target.closest('.time-segment');
+                if (target) {
+                    target.dataset.touchStart = 'true';
+                }
+            }, { passive: true });
+
+            agendaContainer.addEventListener('touchend', (e) => {
+                const target = e.target.closest('.time-segment');
+                if (target && target.dataset.touchStart === 'true') {
+                    // Small delay to distinguish between tap and scroll
+                    setTimeout(() => {
+                        if (target.dataset.touchStart === 'true') {
+                            target.click();
+                        }
+                    }, 100);
+                    delete target.dataset.touchStart;
+                }
+            }, { passive: true });
         }
 
         // Populates a single hour's time slot bar with two work sections
