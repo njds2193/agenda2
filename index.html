@@ -545,30 +545,32 @@
         
         /* Apply touch scroll to entire agenda view area */
         #agendaView {
+            /* Remove height restrictions to show all content */
+            height: auto !important;
+            max-height: none !important;
+            min-height: auto !important;
+            /* Remove overflow restrictions */
+            overflow: visible !important;
+            overflow-y: visible !important;
+            /* Keep touch scrolling for smooth interaction */
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
             touch-action: pan-y;
             scroll-behavior: smooth;
             /* Ensure smooth scrolling on mobile */
             scrollbar-width: thin;
             scrollbar-color: #94a3b8 #f1f5f9;
-            /* Force touch scrolling */
-            overflow-y: scroll !important;
-            -webkit-overflow-scrolling: touch !important;
-            /* Ensure proper height for scrolling */
-            height: calc(100vh - 120px);
-            max-height: calc(100vh - 120px);
-            /* Force hardware acceleration */
-            -webkit-transform: translateZ(0) !important;
-            transform: translateZ(0) !important;
-            will-change: scroll-position !important;
         }
         
         /* Force scroll to work on all devices */
         #agendaView {
-            height: calc(100vh - 120px) !important;
-            max-height: calc(100vh - 120px) !important;
-            overflow-y: scroll !important;
+            /* Remove all height restrictions */
+            height: auto !important;
+            max-height: none !important;
+            min-height: auto !important;
+            /* Remove overflow restrictions */
+            overflow: visible !important;
+            overflow-y: visible !important;
+            /* Keep touch scrolling for smooth interaction */
             -webkit-overflow-scrolling: touch !important;
             touch-action: pan-y !important;
             overscroll-behavior: contain !important;
@@ -733,8 +735,15 @@
             
             /* Force touch scrolling on agenda view */
             #agendaView {
+                /* Remove all height restrictions */
+                height: auto !important;
+                max-height: none !important;
+                min-height: auto !important;
+                /* Remove overflow restrictions */
+                overflow: visible !important;
+                overflow-y: visible !important;
+                /* Keep touch scrolling for smooth interaction */
                 -webkit-overflow-scrolling: touch !important;
-                overflow-y: scroll !important;
                 touch-action: pan-y !important;
             }
             
@@ -763,16 +772,20 @@
         /* Force touch scrolling on mobile devices */
         @media (max-width: 768px) {
             #agendaView {
+                /* Remove all height restrictions on mobile */
+                height: auto !important;
+                max-height: none !important;
+                min-height: auto !important;
+                /* Remove overflow restrictions */
+                overflow: visible !important;
+                overflow-y: visible !important;
+                /* Keep touch scrolling for smooth interaction */
                 -webkit-overflow-scrolling: touch !important;
-                overflow-y: scroll !important;
                 touch-action: pan-y !important;
                 overscroll-behavior: contain !important;
                 -webkit-transform: translateZ(0) !important;
                 transform: translateZ(0) !important;
                 will-change: scroll-position !important;
-                /* Ensure proper height for scrolling */
-                height: calc(100vh - 120px) !important;
-                max-height: calc(100vh - 120px) !important;
             }
             
             #agendaView * {
@@ -790,11 +803,12 @@
                 user-select: none !important;
             }
             
-            /* Ensure agenda slots container allows scrolling */
+            /* Ensure agenda slots container allows full display */
             #agendaSlotsContainer {
                 min-height: auto !important;
                 max-height: none !important;
                 overflow: visible !important;
+                height: auto !important;
             }
         }
         
@@ -892,7 +906,7 @@
                 </div>
         </div>
 
-        <div id="agendaView" class="hidden container-3d p-6 mt-6" style="height: calc(100vh - 120px); overflow-y: auto; -webkit-overflow-scrolling: touch;">
+        <div id="agendaView" class="hidden container-3d p-6 mt-6">
             <h2 id="agendaDateTitle" class="text-2xl font-bold text-slate-700 mb-4 text-center"></h2>
             
             <!-- Date Selector Wheel -->
@@ -1770,9 +1784,12 @@
             
             if (!agendaView || !singleScheduleContainer || !agendaContainer) return;
 
-            // Force touch scrolling on agenda view with inline styles
-            agendaView.style.setProperty('height', 'calc(100vh - 120px)', 'important');
-            agendaView.style.setProperty('overflow-y', 'auto', 'important');
+            // Remove height restrictions to show all content
+            agendaView.style.setProperty('height', 'auto', 'important');
+            agendaView.style.setProperty('max-height', 'none', 'important');
+            agendaView.style.setProperty('min-height', 'auto', 'important');
+            agendaView.style.setProperty('overflow', 'visible', 'important');
+            agendaView.style.setProperty('overflow-y', 'visible', 'important');
             agendaView.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
             agendaView.style.setProperty('touch-action', 'pan-y', 'important');
             agendaView.style.setProperty('overscroll-behavior', 'contain', 'important');
@@ -1851,10 +1868,12 @@
             addTouchScrollSupport(singleScheduleContainer);
             addTouchScrollSupport(agendaContainer);
             
-            // Force scroll to be enabled
+            // Force height to be auto to show all content
             setTimeout(() => {
-                agendaView.style.setProperty('overflow-y', 'scroll', 'important');
-                console.log('Forced scroll enabled on agenda view');
+                agendaView.style.setProperty('height', 'auto', 'important');
+                agendaView.style.setProperty('max-height', 'none', 'important');
+                agendaView.style.setProperty('overflow', 'visible', 'important');
+                console.log('Forced full height display on agenda view');
             }, 100);
         }
 
@@ -4489,33 +4508,36 @@
         requestNotificationPermission();
         startNotificationService();
 
-        // Force touch scroll initialization
+        // Force full height display initialization
         setTimeout(() => {
             enhanceTouchScrollSupport();
             
-            // Additional force scroll setup
+            // Additional force full height setup
             const agendaView = document.getElementById('agendaView');
             if (agendaView) {
-                agendaView.style.setProperty('height', 'calc(100vh - 120px)', 'important');
-                agendaView.style.setProperty('overflow-y', 'scroll', 'important');
-                agendaView.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
-                console.log('Additional scroll setup applied');
+                agendaView.style.setProperty('height', 'auto', 'important');
+                agendaView.style.setProperty('max-height', 'none', 'important');
+                agendaView.style.setProperty('overflow', 'visible', 'important');
+                agendaView.style.setProperty('overflow-y', 'visible', 'important');
+                console.log('Additional full height setup applied');
             }
         }, 500);
         
-        // Re-apply touch scroll support when agenda view is shown
+        // Re-apply full height display when agenda view is shown
         const originalRenderAgendaView = renderAgendaView;
         renderAgendaView = function() {
             originalRenderAgendaView.call(this);
             setTimeout(() => {
                 enhanceTouchScrollSupport();
                 
-                // Force scroll again after rendering
+                // Force full height again after rendering
                 const agendaView = document.getElementById('agendaView');
                 if (agendaView) {
-                    agendaView.style.setProperty('overflow-y', 'scroll', 'important');
-                    agendaView.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
-                    console.log('Scroll re-applied after rendering');
+                    agendaView.style.setProperty('height', 'auto', 'important');
+                    agendaView.style.setProperty('max-height', 'none', 'important');
+                    agendaView.style.setProperty('overflow', 'visible', 'important');
+                    agendaView.style.setProperty('overflow-y', 'visible', 'important');
+                    console.log('Full height re-applied after rendering');
                 }
             }, 200);
         };
