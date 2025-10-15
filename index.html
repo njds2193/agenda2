@@ -558,6 +558,40 @@
             /* Ensure proper height for scrolling */
             height: calc(100vh - 120px);
             max-height: calc(100vh - 120px);
+            /* Force hardware acceleration */
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
+            will-change: scroll-position !important;
+        }
+        
+        /* Force scroll to work on all devices */
+        #agendaView {
+            height: calc(100vh - 120px) !important;
+            max-height: calc(100vh - 120px) !important;
+            overflow-y: scroll !important;
+            -webkit-overflow-scrolling: touch !important;
+            touch-action: pan-y !important;
+            overscroll-behavior: contain !important;
+            scroll-behavior: smooth !important;
+            /* Force hardware acceleration */
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
+            will-change: scroll-position !important;
+        }
+        
+        /* Ensure all child elements don't interfere */
+        #agendaView * {
+            touch-action: pan-y !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+        
+        /* Allow text selection only for input elements */
+        #agendaView input,
+        #agendaView textarea {
+            -webkit-user-select: text !important;
+            user-select: text !important;
         }
         
         /* Custom scrollbar for agenda view */
@@ -858,7 +892,7 @@
                 </div>
         </div>
 
-        <div id="agendaView" class="hidden container-3d p-6 mt-6 h-[calc(100vh-120px)] overflow-y-auto">
+        <div id="agendaView" class="hidden container-3d p-6 mt-6" style="height: calc(100vh - 120px); overflow-y: auto; -webkit-overflow-scrolling: touch;">
             <h2 id="agendaDateTitle" class="text-2xl font-bold text-slate-700 mb-4 text-center"></h2>
             
             <!-- Date Selector Wheel -->
@@ -1736,10 +1770,12 @@
             
             if (!agendaView || !singleScheduleContainer || !agendaContainer) return;
 
-            // Force touch scrolling on agenda view
+            // Force touch scrolling on agenda view with inline styles
+            agendaView.style.setProperty('height', 'calc(100vh - 120px)', 'important');
+            agendaView.style.setProperty('overflow-y', 'auto', 'important');
             agendaView.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
-            agendaView.style.setProperty('overflow-y', 'scroll', 'important');
             agendaView.style.setProperty('touch-action', 'pan-y', 'important');
+            agendaView.style.setProperty('overscroll-behavior', 'contain', 'important');
             
             // Apply to all child elements
             const allElements = agendaView.querySelectorAll('*');
@@ -1754,36 +1790,35 @@
             let touchStartX = 0;
             let isScrolling = false;
             let scrollContainer = agendaView;
+            let lastTouchY = 0;
 
             // Apply touch scroll support to entire agenda view
             function addTouchScrollSupport(container) {
                 container.addEventListener('touchstart', (e) => {
                     touchStartY = e.touches[0].clientY;
                     touchStartX = e.touches[0].clientX;
+                    lastTouchY = touchStartY;
                     isScrolling = false;
                     scrollContainer = container;
-                }, { passive: true });
+                }, { passive: false });
 
                 container.addEventListener('touchmove', (e) => {
-                    if (!isScrolling) {
-                        const touchY = e.touches[0].clientY;
-                        const touchX = e.touches[0].clientX;
-                        const deltaY = Math.abs(touchY - touchStartY);
-                        const deltaX = Math.abs(touchX - touchStartX);
-                        
-                        // Determine if this is a vertical scroll gesture
-                        if (deltaY > deltaX && deltaY > 10) {
-                            isScrolling = true;
-                        }
-                    }
+                    const touchY = e.touches[0].clientY;
+                    const touchX = e.touches[0].clientX;
+                    const deltaY = Math.abs(touchY - touchStartY);
+                    const deltaX = Math.abs(touchX - touchStartX);
                     
-                    // Force scroll on the main container
-                    if (isScrolling && scrollContainer === agendaView) {
-                        const deltaY = touchStartY - e.touches[0].clientY;
-                        scrollContainer.scrollTop += deltaY;
-                        touchStartY = e.touches[0].clientY;
+                    // Determine if this is a vertical scroll gesture
+                    if (deltaY > deltaX && deltaY > 10) {
+                        isScrolling = true;
+                        e.preventDefault(); // Prevent default scrolling
+                        
+                        // Manual scroll implementation
+                        const scrollDelta = lastTouchY - touchY;
+                        scrollContainer.scrollTop += scrollDelta;
+                        lastTouchY = touchY;
                     }
-                }, { passive: true });
+                }, { passive: false });
 
                 container.addEventListener('touchend', (e) => {
                     isScrolling = false;
@@ -1815,6 +1850,12 @@
             addTouchScrollSupport(agendaView);
             addTouchScrollSupport(singleScheduleContainer);
             addTouchScrollSupport(agendaContainer);
+            
+            // Force scroll to be enabled
+            setTimeout(() => {
+                agendaView.style.setProperty('overflow-y', 'scroll', 'important');
+                console.log('Forced scroll enabled on agenda view');
+            }, 100);
         }
 
         // Populates a single hour's time slot bar with two work sections
@@ -4451,6 +4492,15 @@
         // Force touch scroll initialization
         setTimeout(() => {
             enhanceTouchScrollSupport();
+            
+            // Additional force scroll setup
+            const agendaView = document.getElementById('agendaView');
+            if (agendaView) {
+                agendaView.style.setProperty('height', 'calc(100vh - 120px)', 'important');
+                agendaView.style.setProperty('overflow-y', 'scroll', 'important');
+                agendaView.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
+                console.log('Additional scroll setup applied');
+            }
         }, 500);
         
         // Re-apply touch scroll support when agenda view is shown
@@ -4459,6 +4509,14 @@
             originalRenderAgendaView.call(this);
             setTimeout(() => {
                 enhanceTouchScrollSupport();
+                
+                // Force scroll again after rendering
+                const agendaView = document.getElementById('agendaView');
+                if (agendaView) {
+                    agendaView.style.setProperty('overflow-y', 'scroll', 'important');
+                    agendaView.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
+                    console.log('Scroll re-applied after rendering');
+                }
             }, 200);
         };
 
