@@ -543,6 +543,43 @@
             scroll-behavior: smooth; /* Smooth scrolling */
         }
         
+        /* Apply touch scroll to entire agenda view area */
+        #agendaView {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            touch-action: pan-y;
+            scroll-behavior: smooth;
+            /* Ensure smooth scrolling on mobile */
+            scrollbar-width: thin;
+            scrollbar-color: #94a3b8 #f1f5f9;
+        }
+        
+        /* Custom scrollbar for agenda view */
+        #agendaView::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #agendaView::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        #agendaView::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+        
+        #agendaView::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Apply touch scroll to single schedule container */
+        #singleScheduleContainer {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            touch-action: pan-y;
+            scroll-behavior: smooth;
+        }
+        
         /* Ensure touch events work properly on mobile */
         .agenda-slots-container * {
             touch-action: manipulation; /* Optimize touch events */
@@ -556,6 +593,44 @@
                 scrollbar-width: thin;
                 scrollbar-color: #94a3b8 #f1f5f9;
                 /* Additional Android-specific fixes */
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                will-change: scroll-position;
+            }
+            
+            /* Apply Android fixes to entire agenda view */
+            #agendaView {
+                -webkit-overflow-scrolling: touch;
+                overflow-y: auto;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                will-change: scroll-position;
+                /* Mobile-specific optimizations */
+                overscroll-behavior: contain;
+                touch-action: pan-y;
+                /* Hide scrollbar on mobile but keep functionality */
+                scrollbar-width: thin;
+                scrollbar-color: transparent transparent;
+            }
+            
+            /* Hide scrollbar on mobile for agenda view */
+            #agendaView::-webkit-scrollbar {
+                width: 4px;
+            }
+            
+            #agendaView::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            
+            #agendaView::-webkit-scrollbar-thumb {
+                background: rgba(148, 163, 184, 0.3);
+                border-radius: 2px;
+            }
+            
+            /* Apply Android fixes to single schedule container */
+            #singleScheduleContainer {
+                -webkit-overflow-scrolling: touch;
+                overflow-y: auto;
                 -webkit-transform: translateZ(0);
                 transform: translateZ(0);
                 will-change: scroll-position;
@@ -577,6 +652,17 @@
             
             /* Ensure all child elements don't interfere with scrolling */
             .agenda-slots-container > * {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+            
+            /* Ensure all elements in agenda view don't interfere with scrolling */
+            #agendaView > * {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+            
+            #singleScheduleContainer > * {
                 -webkit-transform: translateZ(0);
                 transform: translateZ(0);
             }
@@ -683,7 +769,7 @@
                 </div>
         </div>
 
-        <div id="agendaView" class="hidden container-3d p-6 mt-6">
+        <div id="agendaView" class="hidden container-3d p-6 mt-6 max-h-[100vh] overflow-y-auto">
             <h2 id="agendaDateTitle" class="text-2xl font-bold text-slate-700 mb-4 text-center"></h2>
             
             <!-- Date Selector Wheel -->
@@ -756,7 +842,7 @@
                         <span class="text-slate-600">Trabajo 2</span>
                     </div>
                 </div>
-                <div id="agendaSlotsContainer" class="space-y-1 max-h-[70vh] overflow-y-auto agenda-slots-container pr-2">
+                <div id="agendaSlotsContainer" class="space-y-1 agenda-slots-container pr-2">
                     <!-- Time slots will be populated here -->
                 </div>
             </div>
@@ -1547,59 +1633,70 @@
             }
         }
 
-        // Enhanced touch scroll support for agenda container
+        // Enhanced touch scroll support for entire agenda area
         function enhanceTouchScrollSupport() {
+            const agendaView = document.getElementById('agendaView');
+            const singleScheduleContainer = document.getElementById('singleScheduleContainer');
             const agendaContainer = document.getElementById('agendaSlotsContainer');
-            if (!agendaContainer) return;
+            
+            if (!agendaView || !singleScheduleContainer || !agendaContainer) return;
 
             let touchStartY = 0;
             let touchStartX = 0;
             let isScrolling = false;
 
-            agendaContainer.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-                touchStartX = e.touches[0].clientX;
-                isScrolling = false;
-            }, { passive: true });
+            // Apply touch scroll support to entire agenda view
+            function addTouchScrollSupport(container) {
+                container.addEventListener('touchstart', (e) => {
+                    touchStartY = e.touches[0].clientY;
+                    touchStartX = e.touches[0].clientX;
+                    isScrolling = false;
+                }, { passive: true });
 
-            agendaContainer.addEventListener('touchmove', (e) => {
-                if (!isScrolling) {
-                    const touchY = e.touches[0].clientY;
-                    const touchX = e.touches[0].clientX;
-                    const deltaY = Math.abs(touchY - touchStartY);
-                    const deltaX = Math.abs(touchX - touchStartX);
-                    
-                    // Determine if this is a vertical scroll gesture
-                    if (deltaY > deltaX && deltaY > 10) {
-                        isScrolling = true;
-                    }
-                }
-            }, { passive: true });
-
-            agendaContainer.addEventListener('touchend', (e) => {
-                isScrolling = false;
-            }, { passive: true });
-
-            // Prevent click events during scroll
-            agendaContainer.addEventListener('touchstart', (e) => {
-                const target = e.target.closest('.time-segment');
-                if (target) {
-                    target.dataset.touchStart = 'true';
-                }
-            }, { passive: true });
-
-            agendaContainer.addEventListener('touchend', (e) => {
-                const target = e.target.closest('.time-segment');
-                if (target && target.dataset.touchStart === 'true') {
-                    // Small delay to distinguish between tap and scroll
-                    setTimeout(() => {
-                        if (target.dataset.touchStart === 'true') {
-                            target.click();
+                container.addEventListener('touchmove', (e) => {
+                    if (!isScrolling) {
+                        const touchY = e.touches[0].clientY;
+                        const touchX = e.touches[0].clientX;
+                        const deltaY = Math.abs(touchY - touchStartY);
+                        const deltaX = Math.abs(touchX - touchStartX);
+                        
+                        // Determine if this is a vertical scroll gesture
+                        if (deltaY > deltaX && deltaY > 10) {
+                            isScrolling = true;
                         }
-                    }, 100);
-                    delete target.dataset.touchStart;
-                }
-            }, { passive: true });
+                    }
+                }, { passive: true });
+
+                container.addEventListener('touchend', (e) => {
+                    isScrolling = false;
+                }, { passive: true });
+
+                // Prevent click events during scroll
+                container.addEventListener('touchstart', (e) => {
+                    const target = e.target.closest('.time-segment');
+                    if (target) {
+                        target.dataset.touchStart = 'true';
+                    }
+                }, { passive: true });
+
+                container.addEventListener('touchend', (e) => {
+                    const target = e.target.closest('.time-segment');
+                    if (target && target.dataset.touchStart === 'true') {
+                        // Small delay to distinguish between tap and scroll
+                        setTimeout(() => {
+                            if (target.dataset.touchStart === 'true') {
+                                target.click();
+                            }
+                        }, 100);
+                        delete target.dataset.touchStart;
+                    }
+                }, { passive: true });
+            }
+
+            // Apply touch scroll support to all relevant containers
+            addTouchScrollSupport(agendaView);
+            addTouchScrollSupport(singleScheduleContainer);
+            addTouchScrollSupport(agendaContainer);
         }
 
         // Populates a single hour's time slot bar with two work sections
