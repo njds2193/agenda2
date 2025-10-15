@@ -552,6 +552,9 @@
             /* Ensure smooth scrolling on mobile */
             scrollbar-width: thin;
             scrollbar-color: #94a3b8 #f1f5f9;
+            /* Force touch scrolling */
+            overflow-y: scroll !important;
+            -webkit-overflow-scrolling: touch !important;
         }
         
         /* Custom scrollbar for agenda view */
@@ -674,7 +677,64 @@
                 -webkit-overflow-scrolling: touch;
                 overflow-y: auto;
             }
+            
+            /* Force touch scrolling on agenda view */
+            #agendaView {
+                -webkit-overflow-scrolling: touch !important;
+                overflow-y: scroll !important;
+                touch-action: pan-y !important;
+            }
+            
+            /* Ensure all child elements allow touch scrolling */
+            #agendaView * {
+                touch-action: pan-y !important;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            
+            /* Allow text selection only for input elements */
+            #agendaView input,
+            #agendaView textarea {
+                -webkit-user-select: text;
+                -khtml-user-select: text;
+                -moz-user-select: text;
+                -ms-user-select: text;
+                user-select: text;
+            }
         }
+        
+        /* Force touch scrolling on mobile devices */
+        @media (max-width: 768px) {
+            #agendaView {
+                -webkit-overflow-scrolling: touch !important;
+                overflow-y: scroll !important;
+                touch-action: pan-y !important;
+                overscroll-behavior: contain !important;
+                -webkit-transform: translateZ(0) !important;
+                transform: translateZ(0) !important;
+                will-change: scroll-position !important;
+            }
+            
+            #agendaView * {
+                touch-action: pan-y !important;
+                -webkit-touch-callout: none !important;
+                -webkit-user-select: none !important;
+                user-select: none !important;
+            }
+            
+            /* Ensure time segments don't block touch events */
+            .time-segment {
+                touch-action: pan-y !important;
+                -webkit-touch-callout: none !important;
+                -webkit-user-select: none !important;
+                user-select: none !important;
+            }
+        }
+        
         /* Style for details content in modal */
         .details-content {
             white-space: pre-wrap; /* Preserve whitespace and line breaks */
@@ -1641,9 +1701,24 @@
             
             if (!agendaView || !singleScheduleContainer || !agendaContainer) return;
 
+            // Force touch scrolling on agenda view
+            agendaView.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
+            agendaView.style.setProperty('overflow-y', 'scroll', 'important');
+            agendaView.style.setProperty('touch-action', 'pan-y', 'important');
+            
+            // Apply to all child elements
+            const allElements = agendaView.querySelectorAll('*');
+            allElements.forEach(element => {
+                element.style.setProperty('touch-action', 'pan-y', 'important');
+                element.style.setProperty('-webkit-touch-callout', 'none', 'important');
+                element.style.setProperty('-webkit-user-select', 'none', 'important');
+                element.style.setProperty('user-select', 'none', 'important');
+            });
+
             let touchStartY = 0;
             let touchStartX = 0;
             let isScrolling = false;
+            let scrollContainer = agendaView;
 
             // Apply touch scroll support to entire agenda view
             function addTouchScrollSupport(container) {
@@ -1651,6 +1726,7 @@
                     touchStartY = e.touches[0].clientY;
                     touchStartX = e.touches[0].clientX;
                     isScrolling = false;
+                    scrollContainer = container;
                 }, { passive: true });
 
                 container.addEventListener('touchmove', (e) => {
@@ -1664,6 +1740,13 @@
                         if (deltaY > deltaX && deltaY > 10) {
                             isScrolling = true;
                         }
+                    }
+                    
+                    // Force scroll on the main container
+                    if (isScrolling && scrollContainer === agendaView) {
+                        const deltaY = touchStartY - e.touches[0].clientY;
+                        scrollContainer.scrollTop += deltaY;
+                        touchStartY = e.touches[0].clientY;
                     }
                 }, { passive: true });
 
@@ -4329,6 +4412,20 @@
         loadNotificationSettings();
         requestNotificationPermission();
         startNotificationService();
+
+        // Force touch scroll initialization
+        setTimeout(() => {
+            enhanceTouchScrollSupport();
+        }, 500);
+        
+        // Re-apply touch scroll support when agenda view is shown
+        const originalRenderAgendaView = renderAgendaView;
+        renderAgendaView = function() {
+            originalRenderAgendaView.call(this);
+            setTimeout(() => {
+                enhanceTouchScrollSupport();
+            }, 200);
+        };
 
         // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
