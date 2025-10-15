@@ -101,46 +101,6 @@
             transform: translateY(-2px);
         }
 
-        /* Slider 3D */
-        .slider-3d {
-            background: linear-gradient(145deg, #e2e8f0, #cbd5e1);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .slider-3d::-webkit-slider-thumb {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.3);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .slider-3d::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.4);
-        }
-
-        .slider-3d::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.3);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .slider-3d::-moz-range-thumb:hover {
-            transform: scale(1.1);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.4);
-        }
-
         /* Search Box 3D */
         .search-box-3d {
             background: linear-gradient(145deg, #ffffff, #f8fafc);
@@ -447,8 +407,6 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             cursor: pointer; /* Clickable cursor */
-            touch-action: manipulation; /* Optimize touch events */
-            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
         }
         .free-segment {
             background-color: #f0f9ff; /* Tailwind sky-50 */
@@ -534,284 +492,6 @@
         #searchResultsContainer::-webkit-scrollbar-thumb:hover {
             background: #64748b; /* Tailwind slate-500 */
         }
-        
-        /* Touch scroll support for mobile devices */
-        .agenda-slots-container {
-            -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
-            overscroll-behavior: contain; /* Prevent overscroll */
-            touch-action: pan-y; /* Allow vertical scrolling only */
-            scroll-behavior: smooth; /* Smooth scrolling */
-        }
-        
-        /* Apply touch scroll to entire agenda view area */
-        #agendaView {
-            /* Remove height restrictions to show all content */
-            height: auto !important;
-            max-height: none !important;
-            min-height: auto !important;
-            /* Remove overflow restrictions */
-            overflow: visible !important;
-            overflow-y: visible !important;
-            /* Keep touch scrolling for smooth interaction */
-            -webkit-overflow-scrolling: touch;
-            touch-action: pan-y;
-            scroll-behavior: smooth;
-            /* Ensure smooth scrolling on mobile */
-            scrollbar-width: thin;
-            scrollbar-color: #94a3b8 #f1f5f9;
-        }
-        
-        /* Force scroll to work on all devices */
-        #agendaView {
-            /* Remove all height restrictions */
-            height: auto !important;
-            max-height: none !important;
-            min-height: auto !important;
-            /* Remove overflow restrictions */
-            overflow: visible !important;
-            overflow-y: visible !important;
-            /* Keep touch scrolling for smooth interaction */
-            -webkit-overflow-scrolling: touch !important;
-            touch-action: pan-y !important;
-            overscroll-behavior: contain !important;
-            scroll-behavior: smooth !important;
-            /* Force hardware acceleration */
-            -webkit-transform: translateZ(0) !important;
-            transform: translateZ(0) !important;
-            will-change: scroll-position !important;
-        }
-        
-        /* Ensure all child elements don't interfere */
-        #agendaView * {
-            touch-action: pan-y !important;
-            -webkit-touch-callout: none !important;
-            -webkit-user-select: none !important;
-            user-select: none !important;
-        }
-        
-        /* Allow text selection only for input elements */
-        #agendaView input,
-        #agendaView textarea {
-            -webkit-user-select: text !important;
-            user-select: text !important;
-        }
-        
-        /* Custom scrollbar for agenda view */
-        #agendaView::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        #agendaView::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        
-        #agendaView::-webkit-scrollbar-thumb {
-            background: #94a3b8;
-            border-radius: 4px;
-        }
-        
-        #agendaView::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
-        
-        /* Ensure scrollbar is always visible on mobile */
-        @media (max-width: 768px) {
-            #agendaView::-webkit-scrollbar {
-                width: 6px;
-            }
-            
-            #agendaView::-webkit-scrollbar-track {
-                background: rgba(241, 245, 249, 0.5);
-            }
-            
-            #agendaView::-webkit-scrollbar-thumb {
-                background: rgba(148, 163, 184, 0.8);
-                border-radius: 3px;
-            }
-        }
-        
-        /* Apply touch scroll to single schedule container */
-        #singleScheduleContainer {
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
-            touch-action: pan-y;
-            scroll-behavior: smooth;
-        }
-        
-        /* Ensure touch events work properly on mobile */
-        .agenda-slots-container * {
-            touch-action: manipulation; /* Optimize touch events */
-        }
-        
-        /* Fix for Android touch scrolling issues */
-        @media (hover: none) and (pointer: coarse) {
-            .agenda-slots-container {
-                -webkit-overflow-scrolling: touch;
-                overflow-y: scroll;
-                scrollbar-width: thin;
-                scrollbar-color: #94a3b8 #f1f5f9;
-                /* Additional Android-specific fixes */
-                -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-                will-change: scroll-position;
-            }
-            
-            /* Apply Android fixes to entire agenda view */
-            #agendaView {
-                -webkit-overflow-scrolling: touch;
-                overflow-y: auto;
-                -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-                will-change: scroll-position;
-                /* Mobile-specific optimizations */
-                overscroll-behavior: contain;
-                touch-action: pan-y;
-                /* Hide scrollbar on mobile but keep functionality */
-                scrollbar-width: thin;
-                scrollbar-color: transparent transparent;
-            }
-            
-            /* Hide scrollbar on mobile for agenda view */
-            #agendaView::-webkit-scrollbar {
-                width: 4px;
-            }
-            
-            #agendaView::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            
-            #agendaView::-webkit-scrollbar-thumb {
-                background: rgba(148, 163, 184, 0.3);
-                border-radius: 2px;
-            }
-            
-            /* Apply Android fixes to single schedule container */
-            #singleScheduleContainer {
-                -webkit-overflow-scrolling: touch;
-                overflow-y: auto;
-                -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-                will-change: scroll-position;
-            }
-            
-            /* Hide scrollbar on mobile but keep functionality */
-            .agenda-slots-container::-webkit-scrollbar {
-                width: 4px;
-            }
-            
-            .agenda-slots-container::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            
-            .agenda-slots-container::-webkit-scrollbar-thumb {
-                background: rgba(148, 163, 184, 0.5);
-                border-radius: 2px;
-            }
-            
-            /* Ensure all child elements don't interfere with scrolling */
-            .agenda-slots-container > * {
-                -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-            }
-            
-            /* Ensure all elements in agenda view don't interfere with scrolling */
-            #agendaView > * {
-                -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-            }
-            
-            #singleScheduleContainer > * {
-                -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-            }
-        }
-        
-        /* Additional Android Chrome specific fixes */
-        @media screen and (-webkit-min-device-pixel-ratio: 0) {
-            .agenda-slots-container {
-                -webkit-overflow-scrolling: touch;
-                overflow-y: auto;
-            }
-            
-            /* Force touch scrolling on agenda view */
-            #agendaView {
-                /* Remove all height restrictions */
-                height: auto !important;
-                max-height: none !important;
-                min-height: auto !important;
-                /* Remove overflow restrictions */
-                overflow: visible !important;
-                overflow-y: visible !important;
-                /* Keep touch scrolling for smooth interaction */
-                -webkit-overflow-scrolling: touch !important;
-                touch-action: pan-y !important;
-            }
-            
-            /* Ensure all child elements allow touch scrolling */
-            #agendaView * {
-                touch-action: pan-y !important;
-                -webkit-touch-callout: none;
-                -webkit-user-select: none;
-                -khtml-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
-            
-            /* Allow text selection only for input elements */
-            #agendaView input,
-            #agendaView textarea {
-                -webkit-user-select: text;
-                -khtml-user-select: text;
-                -moz-user-select: text;
-                -ms-user-select: text;
-                user-select: text;
-            }
-        }
-        
-        /* Force touch scrolling on mobile devices */
-        @media (max-width: 768px) {
-            #agendaView {
-                /* Remove all height restrictions on mobile */
-                height: auto !important;
-                max-height: none !important;
-                min-height: auto !important;
-                /* Remove overflow restrictions */
-                overflow: visible !important;
-                overflow-y: visible !important;
-                /* Keep touch scrolling for smooth interaction */
-                -webkit-overflow-scrolling: touch !important;
-                touch-action: pan-y !important;
-                overscroll-behavior: contain !important;
-                -webkit-transform: translateZ(0) !important;
-                transform: translateZ(0) !important;
-                will-change: scroll-position !important;
-            }
-            
-            #agendaView * {
-                touch-action: pan-y !important;
-                -webkit-touch-callout: none !important;
-                -webkit-user-select: none !important;
-                user-select: none !important;
-            }
-            
-            /* Ensure time segments don't block touch events */
-            .time-segment {
-                touch-action: pan-y !important;
-                -webkit-touch-callout: none !important;
-                -webkit-user-select: none !important;
-                user-select: none !important;
-            }
-            
-            /* Ensure agenda slots container allows full display */
-            #agendaSlotsContainer {
-                min-height: auto !important;
-                max-height: none !important;
-                overflow: visible !important;
-                height: auto !important;
-            }
-        }
-        
         /* Style for details content in modal */
         .details-content {
             white-space: pre-wrap; /* Preserve whitespace and line breaks */
@@ -979,7 +659,7 @@
                         <span class="text-slate-600">Trabajo 2</span>
                     </div>
                 </div>
-                <div id="agendaSlotsContainer" class="space-y-1 agenda-slots-container pr-2">
+                <div id="agendaSlotsContainer" class="space-y-1 max-h-[70vh] overflow-y-auto agenda-slots-container pr-2">
                     <!-- Time slots will be populated here -->
                 </div>
             </div>
@@ -1341,35 +1021,6 @@
                 </div>
             </div>
 
-            <!-- Notification Configuration -->
-            <div class="space-y-4 mt-8 pt-6 border-t border-slate-200">
-                <h4 class="text-lg font-semibold text-slate-600 mb-4">Configuración de Notificaciones</h4>
-                
-                <div class="space-y-3">
-                    <label class="block text-sm font-medium text-slate-600">Minutos de Anticipación</label>
-                    <div class="flex items-center space-x-4">
-                        <div class="flex-1">
-                            <input type="range" id="notificationMinutes" min="5" max="60" step="5" value="15" 
-                                   class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider-3d">
-                        </div>
-                        <div class="w-16 text-center">
-                            <span id="notificationMinutesValue" class="text-lg font-semibold text-slate-700">15</span>
-                            <span class="text-sm text-slate-500">min</span>
-                        </div>
-                    </div>
-                    <div class="text-xs text-slate-500">
-                        Las notificaciones se mostrarán esta cantidad de minutos antes de cada cita
-                    </div>
-                </div>
-                
-                <div class="space-y-2">
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" id="notificationsEnabled" checked class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                        <span class="text-sm text-slate-600">Activar notificaciones de citas próximas</span>
-                    </label>
-                </div>
-            </div>
-
             <!-- Action Buttons -->
             <div class="flex justify-between mt-8 pt-6 border-t border-slate-200">
                 <div class="flex space-x-3">
@@ -1393,14 +1044,6 @@
         // Theme management
         let currentTheme = localStorage.getItem('currentTheme') || 'default';
         let currentTextTheme = localStorage.getItem('currentTextTheme') || 'dark';
-        
-        // Notification management
-        let notificationSettings = JSON.parse(localStorage.getItem('notificationSettings')) || {
-            enabled: true,
-            minutesBefore: 15
-        };
-        let notificationInterval = null;
-        let notifiedAppointments = new Set(); // Track already notified appointments
         
         // Theme definitions
         const themes = {
@@ -1664,17 +1307,6 @@
                 hourRow.appendChild(timeSlotBar);
                 agendaSlotsContainerEl.appendChild(hourRow);
             }
-            
-            // Enhance touch scroll support for mobile devices
-            setTimeout(() => {
-                enhanceTouchScrollSupport();
-                
-                // Debug: Verify all hours are generated
-                console.log('Total hour rows generated:', agendaSlotsContainerEl.children.length);
-                console.log('Agenda view height:', agendaViewEl.offsetHeight);
-                console.log('Agenda view scroll height:', agendaViewEl.scrollHeight);
-                console.log('Agenda slots container height:', agendaSlotsContainerEl.offsetHeight);
-            }, 100);
         }
 
 
@@ -1774,107 +1406,6 @@
                     navigateToDate(nextDate);
                 }
             }
-        }
-
-        // Enhanced touch scroll support for entire agenda area
-        function enhanceTouchScrollSupport() {
-            const agendaView = document.getElementById('agendaView');
-            const singleScheduleContainer = document.getElementById('singleScheduleContainer');
-            const agendaContainer = document.getElementById('agendaSlotsContainer');
-            
-            if (!agendaView || !singleScheduleContainer || !agendaContainer) return;
-
-            // Remove height restrictions to show all content
-            agendaView.style.setProperty('height', 'auto', 'important');
-            agendaView.style.setProperty('max-height', 'none', 'important');
-            agendaView.style.setProperty('min-height', 'auto', 'important');
-            agendaView.style.setProperty('overflow', 'visible', 'important');
-            agendaView.style.setProperty('overflow-y', 'visible', 'important');
-            agendaView.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
-            agendaView.style.setProperty('touch-action', 'pan-y', 'important');
-            agendaView.style.setProperty('overscroll-behavior', 'contain', 'important');
-            
-            // Apply to all child elements
-            const allElements = agendaView.querySelectorAll('*');
-            allElements.forEach(element => {
-                element.style.setProperty('touch-action', 'pan-y', 'important');
-                element.style.setProperty('-webkit-touch-callout', 'none', 'important');
-                element.style.setProperty('-webkit-user-select', 'none', 'important');
-                element.style.setProperty('user-select', 'none', 'important');
-            });
-
-            let touchStartY = 0;
-            let touchStartX = 0;
-            let isScrolling = false;
-            let scrollContainer = agendaView;
-            let lastTouchY = 0;
-
-            // Apply touch scroll support to entire agenda view
-            function addTouchScrollSupport(container) {
-                container.addEventListener('touchstart', (e) => {
-                    touchStartY = e.touches[0].clientY;
-                    touchStartX = e.touches[0].clientX;
-                    lastTouchY = touchStartY;
-                    isScrolling = false;
-                    scrollContainer = container;
-                }, { passive: false });
-
-                container.addEventListener('touchmove', (e) => {
-                    const touchY = e.touches[0].clientY;
-                    const touchX = e.touches[0].clientX;
-                    const deltaY = Math.abs(touchY - touchStartY);
-                    const deltaX = Math.abs(touchX - touchStartX);
-                    
-                    // Determine if this is a vertical scroll gesture
-                    if (deltaY > deltaX && deltaY > 10) {
-                        isScrolling = true;
-                        e.preventDefault(); // Prevent default scrolling
-                        
-                        // Manual scroll implementation
-                        const scrollDelta = lastTouchY - touchY;
-                        scrollContainer.scrollTop += scrollDelta;
-                        lastTouchY = touchY;
-                    }
-                }, { passive: false });
-
-                container.addEventListener('touchend', (e) => {
-                    isScrolling = false;
-                }, { passive: true });
-
-                // Prevent click events during scroll
-                container.addEventListener('touchstart', (e) => {
-                    const target = e.target.closest('.time-segment');
-                    if (target) {
-                        target.dataset.touchStart = 'true';
-                    }
-                }, { passive: true });
-
-                container.addEventListener('touchend', (e) => {
-                    const target = e.target.closest('.time-segment');
-                    if (target && target.dataset.touchStart === 'true') {
-                        // Small delay to distinguish between tap and scroll
-                        setTimeout(() => {
-                            if (target.dataset.touchStart === 'true') {
-                                target.click();
-                            }
-                        }, 100);
-                        delete target.dataset.touchStart;
-                    }
-                }, { passive: true });
-            }
-
-            // Apply touch scroll support to all relevant containers
-            addTouchScrollSupport(agendaView);
-            addTouchScrollSupport(singleScheduleContainer);
-            addTouchScrollSupport(agendaContainer);
-            
-            // Force height to be auto to show all content
-            setTimeout(() => {
-                agendaView.style.setProperty('height', 'auto', 'important');
-                agendaView.style.setProperty('max-height', 'none', 'important');
-                agendaView.style.setProperty('overflow', 'visible', 'important');
-                console.log('Forced full height display on agenda view');
-            }, 100);
         }
 
         // Populates a single hour's time slot bar with two work sections
@@ -2647,12 +2178,6 @@
             const secondaryTextColor = localStorage.getItem('secondaryTextColor') || '#6b7280';
             const buttonColors = JSON.parse(localStorage.getItem('buttonColors')) || { color1: '#667eea', color2: '#764ba2' };
             
-            // Load notification settings
-            loadNotificationSettings();
-            document.getElementById('notificationMinutes').value = notificationSettings.minutesBefore;
-            document.getElementById('notificationMinutesValue').textContent = notificationSettings.minutesBefore;
-            document.getElementById('notificationsEnabled').checked = notificationSettings.enabled;
-            
             if (customTheme) {
                 updateColorFromSlider('color1', customTheme.color1, (hexToHue(customTheme.color1) / 360) * 100);
                 updateColorFromSlider('color2', customTheme.color2, (hexToHue(customTheme.color2) / 360) * 100);
@@ -2736,15 +2261,6 @@
             const secondaryText = document.getElementById('secondaryTextHex').value;
             const buttonColor1 = document.getElementById('buttonColor1Hex').value;
             const buttonColor2 = document.getElementById('buttonColor2Hex').value;
-            
-            // Apply notification settings
-            notificationSettings.minutesBefore = parseInt(document.getElementById('notificationMinutes').value);
-            notificationSettings.enabled = document.getElementById('notificationsEnabled').checked;
-            saveNotificationSettings();
-            
-            // Restart notification service with new settings
-            stopNotificationService();
-            startNotificationService();
             
             applyCustomTheme(color1, color2);
             applyTextColors(primaryText, secondaryText);
@@ -2897,119 +2413,6 @@
             const lightness = 50 + (Math.abs(hash) % 20); // Lightness 50-70%
             
             return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-        }
-
-        // --- Notification Functions ---
-        
-        function requestNotificationPermission() {
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        console.log('Notification permission granted');
-                    }
-                });
-            }
-        }
-
-        function showNotification(title, body, icon = null) {
-            if ('Notification' in window && Notification.permission === 'granted') {
-                const notification = new Notification(title, {
-                    body: body,
-                    icon: icon || '/images/icon-192x192.png',
-                    badge: '/images/icon-192x192.png',
-                    tag: 'agenda-notification',
-                    requireInteraction: true,
-                    silent: false
-                });
-
-                // Auto-close after 10 seconds
-                setTimeout(() => {
-                    notification.close();
-                }, 10000);
-
-                return notification;
-            }
-        }
-
-        function checkUpcomingAppointments() {
-            if (!notificationSettings.enabled) return;
-
-            const now = new Date();
-            const userAppointments = getCurrentUserAppointments();
-            const today = formatDateKey(now);
-            const tomorrow = formatDateKey(new Date(now.getTime() + 24 * 60 * 60 * 1000));
-
-            // Check today's appointments
-            const todayAppointments = userAppointments[today] || [];
-            checkAppointmentsForNotifications(todayAppointments, now);
-
-            // Check tomorrow's appointments (for early morning notifications)
-            const tomorrowAppointments = userAppointments[tomorrow] || [];
-            checkAppointmentsForNotifications(tomorrowAppointments, now);
-        }
-
-        function checkAppointmentsForNotifications(appointments, currentTime) {
-            appointments.forEach(appointment => {
-                const appointmentId = `${appointment.startHour}-${appointment.startMinute}-${appointment.duration}-${appointment.workType}`;
-                
-                // Skip if already notified
-                if (notifiedAppointments.has(appointmentId)) return;
-
-                const appointmentTime = new Date();
-                appointmentTime.setHours(appointment.startHour, appointment.startMinute, 0, 0);
-                
-                const timeDiff = appointmentTime.getTime() - currentTime.getTime();
-                const minutesDiff = Math.floor(timeDiff / (1000 * 60));
-
-                // Check if appointment is within notification window
-                if (minutesDiff > 0 && minutesDiff <= notificationSettings.minutesBefore) {
-                    const workTypeIcon = appointment.workType === 'work1' ? '⚡' : '🚀';
-                    const workTypeName = appointment.workType === 'work1' ? 'Trabajo 1' : 'Trabajo 2';
-                    
-                    const title = `Cita Próxima - ${workTypeName}`;
-                    const body = `${workTypeIcon} ${appointment.activity}\nEn ${minutesDiff} minutos (${appointmentTime.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })})`;
-                    
-                    showNotification(title, body);
-                    notifiedAppointments.add(appointmentId);
-                    
-                    console.log(`Notification sent for appointment: ${appointment.activity} in ${minutesDiff} minutes`);
-                }
-            });
-        }
-
-        function startNotificationService() {
-            if (notificationInterval) {
-                clearInterval(notificationInterval);
-            }
-
-            if (notificationSettings.enabled) {
-                // Check every minute
-                notificationInterval = setInterval(checkUpcomingAppointments, 60000);
-                
-                // Initial check
-                checkUpcomingAppointments();
-                
-                console.log('Notification service started');
-            }
-        }
-
-        function stopNotificationService() {
-            if (notificationInterval) {
-                clearInterval(notificationInterval);
-                notificationInterval = null;
-                console.log('Notification service stopped');
-            }
-        }
-
-        function saveNotificationSettings() {
-            localStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
-        }
-
-        function loadNotificationSettings() {
-            const saved = localStorage.getItem('notificationSettings');
-            if (saved) {
-                notificationSettings = JSON.parse(saved);
-            }
         }
         function createTimeSegment(hour, startMinuteOffset, durationMinutes, isFree, appointmentData, workType = null) {
             const segment = document.createElement('div');
@@ -4290,28 +3693,6 @@
             });
         });
         
-        // Notification settings event listeners
-        const notificationMinutesSlider = document.getElementById('notificationMinutes');
-        const notificationMinutesValue = document.getElementById('notificationMinutesValue');
-        const notificationsEnabledCheckbox = document.getElementById('notificationsEnabled');
-        
-        if (notificationMinutesSlider) {
-            notificationMinutesSlider.addEventListener('input', (e) => {
-                notificationMinutesValue.textContent = e.target.value;
-            });
-        }
-        
-        if (notificationsEnabledCheckbox) {
-            notificationsEnabledCheckbox.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    requestNotificationPermission();
-                    startNotificationService();
-                } else {
-                    stopNotificationService();
-                }
-            });
-        }
-        
         // Preset theme buttons
         document.querySelectorAll('.preset-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -4502,45 +3883,6 @@
         const primaryTextColor = localStorage.getItem('primaryTextColor') || '#1f2937';
         const secondaryTextColor = localStorage.getItem('secondaryTextColor') || '#6b7280';
         applyTextColors(primaryTextColor, secondaryTextColor);
-
-        // Initialize notification service
-        loadNotificationSettings();
-        requestNotificationPermission();
-        startNotificationService();
-
-        // Force full height display initialization
-        setTimeout(() => {
-            enhanceTouchScrollSupport();
-            
-            // Additional force full height setup
-            const agendaView = document.getElementById('agendaView');
-            if (agendaView) {
-                agendaView.style.setProperty('height', 'auto', 'important');
-                agendaView.style.setProperty('max-height', 'none', 'important');
-                agendaView.style.setProperty('overflow', 'visible', 'important');
-                agendaView.style.setProperty('overflow-y', 'visible', 'important');
-                console.log('Additional full height setup applied');
-            }
-        }, 500);
-        
-        // Re-apply full height display when agenda view is shown
-        const originalRenderAgendaView = renderAgendaView;
-        renderAgendaView = function() {
-            originalRenderAgendaView.call(this);
-            setTimeout(() => {
-                enhanceTouchScrollSupport();
-                
-                // Force full height again after rendering
-                const agendaView = document.getElementById('agendaView');
-                if (agendaView) {
-                    agendaView.style.setProperty('height', 'auto', 'important');
-                    agendaView.style.setProperty('max-height', 'none', 'important');
-                    agendaView.style.setProperty('overflow', 'visible', 'important');
-                    agendaView.style.setProperty('overflow-y', 'visible', 'important');
-                    console.log('Full height re-applied after rendering');
-                }
-            }, 200);
-        };
 
         // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
